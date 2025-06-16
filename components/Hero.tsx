@@ -58,52 +58,73 @@ export default function Hero() {
           position: relative;
           overflow: hidden;
           padding-top: 80px;
+          background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+        }
+
+        .hero::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+          animation: patternMove 30s linear infinite;
+          pointer-events: none;
         }
 
         .hero-content {
-          max-width: 800px;
+          max-width: 900px;
           margin: 0 auto;
           padding: 0 2rem;
           z-index: 1;
+          position: relative;
         }
 
         .status-badge {
           display: inline-flex;
           align-items: center;
-          gap: 0.5rem;
-          background: rgba(40, 167, 69, 0.1);
+          gap: 0.75rem;
+          background: rgba(16, 185, 129, 0.1);
           color: var(--success-color);
-          padding: 0.5rem 1rem;
-          border-radius: 25px;
-          font-size: 0.9rem;
-          margin-bottom: 2rem;
-          border: 1px solid rgba(40, 167, 69, 0.3);
+          padding: 0.75rem 1.5rem;
+          border-radius: 50px;
+          font-size: 1rem;
+          margin-bottom: 2.5rem;
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          backdrop-filter: blur(20px);
           animation: slideInUp 1s ease-out 0.3s both;
+          font-weight: 600;
+          box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
         }
 
         .status-indicator {
-          width: 8px;
-          height: 8px;
+          width: 10px;
+          height: 10px;
           background: var(--success-color);
           border-radius: 50%;
           animation: pulse 2s infinite;
+          box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
         }
 
         .hero-title {
-          font-size: 4.5rem;
-          margin-bottom: 1rem;
-          background: var(--gradient-primary);
+          font-size: 5rem;
+          margin-bottom: 1.5rem;
+          background: var(--gradient-hero);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
           animation: slideInUp 1s ease-out;
-          font-weight: 700;
-          min-height: 5.5rem;
+          font-weight: 800;
+          min-height: 6rem;
+          letter-spacing: -0.02em;
+          text-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
         }
 
         .cursor-blink {
           color: var(--primary-color);
           animation: blink 1s infinite;
+          text-shadow: 0 0 20px currentColor;
         }
 
         @keyframes blink {
@@ -112,29 +133,56 @@ export default function Hero() {
         }
 
         .hero-subtitle {
-          font-size: 1.8rem;
+          font-size: 2rem;
           color: var(--text-muted);
-          margin-bottom: 1.5rem;
+          margin-bottom: 2rem;
           animation: slideInUp 1s ease-out 0.2s both;
+          font-weight: 600;
+          background: linear-gradient(135deg, var(--text-muted), var(--primary-light));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
         .hero-description {
-          font-size: 1.1rem;
-          line-height: 1.7;
-          margin-bottom: 2.5rem;
+          font-size: 1.2rem;
+          line-height: 1.8;
+          margin-bottom: 3rem;
           animation: slideInUp 1s ease-out 0.4s both;
-          max-width: 600px;
+          max-width: 700px;
           margin-left: auto;
           margin-right: auto;
-          margin-bottom: 2.5rem;
+          margin-bottom: 3rem;
+          color: var(--text-secondary);
+          font-weight: 500;
         }
 
         .cta-buttons {
           display: flex;
-          gap: 1.5rem;
+          gap: 2rem;
           justify-content: center;
           flex-wrap: wrap;
           animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        @keyframes patternMove {
+          0% { transform: translateX(0) translateY(0); }
+          100% { transform: translateX(60px) translateY(60px); }
+        }
+
+        @media (max-width: 1024px) {
+          .hero-title {
+            font-size: 4rem;
+            min-height: 5rem;
+          }
+
+          .hero-subtitle {
+            font-size: 1.6rem;
+          }
+
+          .hero-description {
+            font-size: 1.1rem;
+          }
         }
 
         @media (max-width: 768px) {
@@ -144,23 +192,28 @@ export default function Hero() {
           }
 
           .hero-title {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             min-height: 3.5rem;
           }
 
           .hero-subtitle {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
           }
 
           .hero-description {
             font-size: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
           }
 
           .cta-buttons {
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
+          }
+
+          .status-badge {
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
           }
         }
 
@@ -174,12 +227,21 @@ export default function Hero() {
           }
 
           .hero-title {
-            font-size: 2rem;
-            min-height: 2.5rem;
+            font-size: 2.2rem;
+            min-height: 2.8rem;
           }
 
           .hero-subtitle {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+          }
+
+          .hero-description {
+            font-size: 0.95rem;
+          }
+
+          .status-badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
           }
         }
       `}</style>

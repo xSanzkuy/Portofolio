@@ -10,11 +10,11 @@ import Certificates from '@/components/Certificates';
 import Projects from '@/components/Projects';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-import CustomCursor from '@/components/CustomCursor';
+import SplashCursor from '@/components/SplashCursor';
 import LoadingScreen from '@/components/LoadingScreen';
 import ThemeToggle from '@/components/ThemeToggle';
 import DownloadCV from '@/components/DownloadCV';
-import DraggableLanyard from '@/components/DraggableLanyard';
+import CodeLanyard from '@/components/CodeLanyard';
 import FloatingElements from '@/components/FloatingElements';
 import ScrollProgress from '@/components/ScrollProgress';
 import ParticleSystem from '@/components/ParticleSystem';
@@ -39,11 +39,11 @@ export default function Home() {
   return (
     <main className={`portfolio-wrapper ${isDarkMode ? 'dark' : 'light'}`}>
       {isLoading && <LoadingScreen />}
-      <CustomCursor />
+      <SplashCursor />
       <ScrollProgress />
       <ParticleSystem />
       <FloatingElements />
-      <DraggableLanyard />
+      <CodeLanyard />
       
       <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
       <DownloadCV />
