@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 export default function DraggableLanyard() {
-  const [position, setPosition] = useState({ x: 50, y: 150 });
+  const [position, setPosition] = useState({ x: 100, y: 200 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isFlipped, setIsFlipped] = useState(false);
@@ -64,65 +64,36 @@ export default function DraggableLanyard() {
       <div className="lanyard-card">
         <div className="card-front">
           <div className="card-header">
-            <div className="profile-photo">
-              <img 
-                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face" 
-                alt="Sandi Kurniawan"
-              />
-              <div className="photo-border"></div>
+            <div className="avatar">
+              <i className="fas fa-user"></i>
             </div>
             <div className="status-indicator"></div>
           </div>
           <div className="card-content">
             <h3>Sandi Kurniawan</h3>
-            <p>Frontend Developer & Designer</p>
+            <p>Frontend Developer</p>
             <div className="tech-badges">
-              <span className="tech-badge react">React</span>
-              <span className="tech-badge next">Next.js</span>
-              <span className="tech-badge vue">Vue.js</span>
+              <span className="tech-badge">React</span>
+              <span className="tech-badge">Next.js</span>
+              <span className="tech-badge">Vue.js</span>
             </div>
             <div className="card-footer">
-              <div className="location">
+              <span className="location">
                 <i className="fas fa-map-marker-alt"></i>
-                <span>Yogyakarta, ID</span>
-              </div>
-              <div className="experience">
-                <i className="fas fa-code"></i>
-                <span>2+ Years</span>
-              </div>
+                Yogyakarta, ID
+              </span>
             </div>
           </div>
         </div>
         <div className="card-back">
-          <div className="qr-section">
-            <div className="qr-code">
-              <div className="qr-pattern"></div>
-            </div>
-            <p>Scan to view portfolio</p>
+          <div className="qr-code">
+            <div className="qr-pattern"></div>
           </div>
+          <p>Scan to view portfolio</p>
           <div className="social-links-mini">
-            <div className="social-item">
-              <i className="fab fa-github"></i>
-              <span>GitHub</span>
-            </div>
-            <div className="social-item">
-              <i className="fab fa-linkedin"></i>
-              <span>LinkedIn</span>
-            </div>
-            <div className="social-item">
-              <i className="fas fa-envelope"></i>
-              <span>Email</span>
-            </div>
-          </div>
-          <div className="achievements">
-            <div className="achievement">
-              <i className="fas fa-trophy"></i>
-              <span>7 Certificates</span>
-            </div>
-            <div className="achievement">
-              <i className="fas fa-project-diagram"></i>
-              <span>10+ Projects</span>
-            </div>
+            <i className="fab fa-github"></i>
+            <i className="fab fa-linkedin"></i>
+            <i className="fas fa-envelope"></i>
           </div>
         </div>
       </div>
@@ -135,25 +106,22 @@ export default function DraggableLanyard() {
           cursor: grab;
           user-select: none;
           transform-style: preserve-3d;
-          transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+          transition: transform 0.2s ease;
         }
 
         .draggable-lanyard.dragging {
           cursor: grabbing;
           transform: scale(1.05) rotate(5deg);
           z-index: 1001;
-          filter: drop-shadow(0 20px 50px rgba(0, 212, 255, 0.4));
         }
 
         .lanyard-cord {
-          width: 3px;
+          width: 2px;
           height: 40px;
-          background: linear-gradient(180deg, #666, #333, #666);
+          background: linear-gradient(180deg, #666, #333);
           margin: 0 auto 8px;
-          border-radius: 2px;
+          border-radius: 1px;
           position: relative;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .lanyard-cord::before {
@@ -161,19 +129,18 @@ export default function DraggableLanyard() {
           position: absolute;
           top: -8px;
           left: -4px;
-          width: 11px;
+          width: 10px;
           height: 8px;
-          background: linear-gradient(145deg, #444, #222);
+          background: #333;
           border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .lanyard-card {
-          width: 260px;
-          height: 160px;
+          width: 280px;
+          height: 180px;
           position: relative;
           transform-style: preserve-3d;
-          transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          transition: transform 0.6s ease;
           perspective: 1000px;
         }
 
@@ -189,78 +156,50 @@ export default function DraggableLanyard() {
           backface-visibility: hidden;
           border-radius: 16px;
           box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-          border: 2px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           overflow: hidden;
         }
 
         .card-front {
           background: linear-gradient(135deg, 
-            rgba(0, 212, 255, 0.15) 0%, 
-            rgba(76, 205, 196, 0.15) 30%, 
-            rgba(102, 126, 234, 0.15) 70%,
-            rgba(255, 107, 107, 0.1) 100%);
-          backdrop-filter: blur(25px);
+            rgba(0, 212, 255, 0.1) 0%, 
+            rgba(76, 205, 196, 0.1) 50%, 
+            rgba(102, 126, 234, 0.1) 100%);
+          backdrop-filter: blur(20px);
           color: var(--text-light);
-          position: relative;
-        }
-
-        .card-front::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: var(--gradient-primary);
-          animation: gradientMove 3s ease infinite;
         }
 
         .card-back {
           background: linear-gradient(135deg, 
-            rgba(102, 126, 234, 0.15) 0%, 
-            rgba(0, 212, 255, 0.15) 50%,
-            rgba(76, 205, 196, 0.1) 100%);
-          backdrop-filter: blur(25px);
+            rgba(102, 126, 234, 0.1) 0%, 
+            rgba(0, 212, 255, 0.1) 100%);
+          backdrop-filter: blur(20px);
           color: var(--text-light);
           transform: rotateY(180deg);
           display: flex;
           flex-direction: column;
-          padding: 16px;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
         }
 
         .card-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 16px 16px 8px;
+          padding: 20px 20px 10px;
         }
 
-        .profile-photo {
-          position: relative;
+        .avatar {
           width: 50px;
           height: 50px;
-        }
-
-        .profile-photo img {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid transparent;
           background: var(--gradient-primary);
-          padding: 1px;
-        }
-
-        .photo-border {
-          position: absolute;
-          top: -2px;
-          left: -2px;
-          right: -2px;
-          bottom: -2px;
           border-radius: 50%;
-          background: var(--gradient-primary);
-          z-index: -1;
-          animation: pulse 2s infinite;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+          color: white;
         }
 
         .status-indicator {
@@ -269,107 +208,74 @@ export default function DraggableLanyard() {
           background: var(--success-color);
           border-radius: 50%;
           animation: pulse 2s infinite;
-          box-shadow: 0 0 12px var(--success-color);
-          border: 2px solid white;
+          box-shadow: 0 0 10px var(--success-color);
         }
 
         .card-content {
-          padding: 0 16px 16px;
-          flex: 1;
+          padding: 0 20px 20px;
         }
 
         .card-content h3 {
-          font-size: 1.2rem;
+          font-size: 1.3rem;
           font-weight: 700;
           margin-bottom: 4px;
           background: var(--gradient-primary);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          background-clip: text;
         }
 
-        .card-content > p {
+        .card-content p {
           color: var(--text-muted);
-          font-size: 0.8rem;
+          font-size: 0.9rem;
           margin-bottom: 12px;
-          font-weight: 500;
         }
 
         .tech-badges {
           display: flex;
           gap: 6px;
-          margin-bottom: 12px;
+          margin-bottom: 15px;
           flex-wrap: wrap;
         }
 
         .tech-badge {
+          background: rgba(0, 212, 255, 0.2);
+          color: var(--primary-color);
           padding: 3px 8px;
           border-radius: 12px;
-          font-size: 0.65rem;
+          font-size: 0.7rem;
           font-weight: 600;
-          border: 1px solid;
-          transition: all 0.3s ease;
-        }
-
-        .tech-badge.react {
-          background: rgba(97, 218, 251, 0.2);
-          color: #61dafb;
-          border-color: rgba(97, 218, 251, 0.3);
-        }
-
-        .tech-badge.next {
-          background: rgba(255, 255, 255, 0.1);
-          color: #ffffff;
-          border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .tech-badge.vue {
-          background: rgba(79, 192, 141, 0.2);
-          color: #4fc08d;
-          border-color: rgba(79, 192, 141, 0.3);
-        }
-
-        .tech-badge:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+          border: 1px solid rgba(0, 212, 255, 0.3);
         }
 
         .card-footer {
           display: flex;
-          justify-content: space-between;
           align-items: center;
+          justify-content: space-between;
         }
 
-        .location, .experience {
+        .location {
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
           color: var(--text-muted);
-          font-size: 0.7rem;
-        }
-
-        .location i, .experience i {
-          color: var(--primary-color);
           font-size: 0.8rem;
         }
 
-        .qr-section {
-          text-align: center;
-          margin-bottom: 16px;
+        .location i {
+          color: var(--primary-color);
         }
 
         .qr-code {
-          width: 70px;
-          height: 70px;
+          width: 80px;
+          height: 80px;
           background: white;
-          border-radius: 10px;
-          margin: 0 auto 12px;
+          border-radius: 8px;
+          margin-bottom: 15px;
           display: flex;
           align-items: center;
           justify-content: center;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .qr-pattern {
@@ -381,63 +287,24 @@ export default function DraggableLanyard() {
             radial-gradient(circle at 20% 80%, #000 2px, transparent 2px),
             radial-gradient(circle at 80% 80%, #000 2px, transparent 2px),
             radial-gradient(circle at 50% 50%, #000 3px, transparent 3px);
-          background-size: 18px 18px, 18px 18px, 18px 18px, 18px 18px, 14px 14px;
-        }
-
-        .qr-section p {
-          color: var(--text-muted);
-          font-size: 0.75rem;
-          margin: 0;
+          background-size: 20px 20px, 20px 20px, 20px 20px, 20px 20px, 15px 15px;
         }
 
         .social-links-mini {
           display: flex;
-          flex-direction: column;
-          gap: 8px;
-          margin-bottom: 16px;
+          gap: 15px;
+          margin-top: 10px;
         }
 
-        .social-item {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          color: var(--text-muted);
-          font-size: 0.75rem;
-          transition: all 0.3s ease;
-        }
-
-        .social-item:hover {
+        .social-links-mini i {
           color: var(--primary-color);
-          transform: translateX(3px);
+          font-size: 1.2rem;
+          opacity: 0.8;
+          transition: opacity 0.3s ease;
         }
 
-        .social-item i {
-          color: var(--primary-color);
-          font-size: 0.9rem;
-          width: 16px;
-        }
-
-        .achievements {
-          display: flex;
-          justify-content: space-between;
-          gap: 8px;
-        }
-
-        .achievement {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          color: var(--text-muted);
-          font-size: 0.65rem;
-          background: rgba(0, 212, 255, 0.1);
-          padding: 6px 10px;
-          border-radius: 12px;
-          border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .achievement i {
-          color: var(--gold-accent);
-          font-size: 0.8rem;
+        .social-links-mini i:hover {
+          opacity: 1;
         }
 
         .drag-hint {
@@ -445,77 +312,33 @@ export default function DraggableLanyard() {
           top: -30px;
           left: 50%;
           transform: translateX(-50%);
-          background: rgba(0, 0, 0, 0.9);
+          background: rgba(0, 0, 0, 0.8);
           color: white;
           padding: 6px 12px;
           border-radius: 20px;
-          font-size: 0.65rem;
+          font-size: 0.7rem;
           white-space: nowrap;
           opacity: 0;
           transition: opacity 0.3s ease;
           pointer-events: none;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .draggable-lanyard:hover .drag-hint {
           opacity: 1;
         }
 
-        @keyframes gradientMove {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
         @media (max-width: 768px) {
           .lanyard-card {
-            width: 220px;
-            height: 140px;
-          }
-
-          .profile-photo {
-            width: 40px;
-            height: 40px;
+            width: 240px;
+            height: 150px;
           }
 
           .card-content h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
           }
 
           .tech-badge {
             font-size: 0.6rem;
-            padding: 2px 6px;
-          }
-
-          .qr-code {
-            width: 60px;
-            height: 60px;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .lanyard-card {
-            width: 200px;
-            height: 130px;
-          }
-
-          .card-header {
-            padding: 12px 12px 6px;
-          }
-
-          .card-content {
-            padding: 0 12px 12px;
-          }
-
-          .profile-photo {
-            width: 35px;
-            height: 35px;
-          }
-
-          .status-indicator {
-            width: 10px;
-            height: 10px;
           }
         }
       `}</style>
