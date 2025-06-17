@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import ScrollReveal from '@/components/ScrollReveal';
 
 export default function Skills() {
   const [isVisible, setIsVisible] = useState(false);
@@ -56,46 +57,45 @@ export default function Skills() {
   return (
     <section id="skills" className="section">
       <div className="container">
-        <h2 className={`section-title ${isVisible ? 'fade-in visible' : 'fade-in'}`}>
-          Skills & Technologies
-        </h2>
+        <ScrollReveal direction="fade">
+          <h2 className="section-title">Skills & Technologies</h2>
+        </ScrollReveal>
+        
         <div className="skills-grid">
           {skillCategories.map((category, index) => (
-            <div
-              key={category.title}
-              className={`skill-category ${isVisible ? 'fade-in visible' : 'fade-in'}`}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <h3>
-                <i className={category.icon}></i>
-                {category.title}
-              </h3>
-              <div className="skill-list">
-                {category.skills.map((skill) => (
-                  <span key={skill} className="skill-tag">{skill}</span>
-                ))}
-              </div>
-              {category.progressSkills && (
-                <div className="skill-progress-container">
-                  {category.progressSkills.map((skill) => (
-                    <div key={skill.name} className="skill-progress-item">
-                      <div className="skill-progress-header">
-                        <span className="skill-progress-name">{skill.name}</span>
-                        <span className="skill-progress-percent">{skill.percent}%</span>
-                      </div>
-                      <div className="skill-progress-bar">
-                        <div
-                          className="skill-progress-fill"
-                          style={{
-                            width: progressAnimated ? `${skill.percent}%` : '0%',
-                          }}
-                        />
-                      </div>
-                    </div>
+            <ScrollReveal key={category.title} direction="up" delay={index * 0.1}>
+              <div className="skill-category card-featured glow-on-hover">
+                <h3>
+                  <i className={category.icon}></i>
+                  {category.title}
+                </h3>
+                <div className="skill-list">
+                  {category.skills.map((skill) => (
+                    <span key={skill} className="skill-tag hover-lift">{skill}</span>
                   ))}
                 </div>
-              )}
-            </div>
+                {category.progressSkills && (
+                  <div className="skill-progress-container">
+                    {category.progressSkills.map((skill) => (
+                      <div key={skill.name} className="skill-progress-item">
+                        <div className="skill-progress-header">
+                          <span className="skill-progress-name">{skill.name}</span>
+                          <span className="skill-progress-percent">{skill.percent}%</span>
+                        </div>
+                        <div className="skill-progress-bar">
+                          <div
+                            className="skill-progress-fill"
+                            style={{
+                              width: progressAnimated ? `${skill.percent}%` : '0%',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -103,21 +103,21 @@ export default function Skills() {
       <style jsx>{`
         .skills-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 2.5rem;
-          margin-top: 3rem;
+          grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+          gap: 3rem;
+          margin-top: 4rem;
         }
 
         .skill-category {
           background: var(--bg-card);
-          backdrop-filter: blur(25px);
-          border-radius: 25px;
-          padding: 2.5rem;
+          backdrop-filter: blur(30px);
+          border-radius: var(--border-radius-lg);
+          padding: 3rem;
           border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.3s ease;
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           position: relative;
           overflow: hidden;
-          cursor: none;
+          cursor: pointer;
         }
 
         .skill-category::before {
@@ -126,76 +126,79 @@ export default function Skills() {
           top: 0;
           left: 0;
           right: 0;
-          height: 3px;
+          height: 4px;
           background: var(--gradient-primary);
         }
 
         .skill-category:hover {
-          transform: translateY(-10px);
-          box-shadow: var(--shadow-glow);
+          transform: translateY(-12px);
+          box-shadow: var(--shadow-intense);
         }
 
         .skill-category h3 {
           color: var(--primary-color);
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
           display: flex;
           align-items: center;
-          gap: 0.8rem;
-          font-size: 1.4rem;
-          font-weight: 600;
+          gap: 1rem;
+          font-size: 1.5rem;
+          font-weight: 700;
         }
 
         .skill-list {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-          gap: 1rem;
-          margin-bottom: 2rem;
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+          gap: 1.2rem;
+          margin-bottom: 2.5rem;
         }
 
         .skill-tag {
-          background: rgba(0, 212, 255, 0.1);
+          background: rgba(99, 102, 241, 0.15);
           color: var(--primary-color);
-          padding: 0.8rem 1.2rem;
+          padding: 1rem 1.5rem;
           border-radius: 25px;
-          font-size: 0.9rem;
-          border: 1px solid rgba(0, 212, 255, 0.3);
+          font-size: 0.95rem;
+          border: 1px solid rgba(99, 102, 241, 0.3);
           text-align: center;
           transition: all 0.3s ease;
-          font-weight: 500;
-          cursor: none;
+          font-weight: 600;
+          cursor: pointer;
         }
 
         .skill-tag:hover {
-          background: rgba(0, 212, 255, 0.2);
-          transform: translateY(-2px);
+          background: rgba(99, 102, 241, 0.25);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
         }
 
         .skill-progress-container {
-          margin-top: 2rem;
+          margin-top: 2.5rem;
         }
 
         .skill-progress-item {
-          margin-bottom: 1.5rem;
+          margin-bottom: 2rem;
         }
 
         .skill-progress-header {
           display: flex;
           justify-content: space-between;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.8rem;
         }
 
         .skill-progress-name {
           color: var(--text-light);
-          font-weight: 600;
+          font-weight: 700;
+          font-size: 1.1rem;
         }
 
         .skill-progress-percent {
           color: var(--primary-color);
-          font-weight: 600;
+          font-weight: 700;
+          font-size: 1.1rem;
         }
 
         .skill-progress-bar {
-          height: 8px;
+          height: 10px;
           background: rgba(255, 255, 255, 0.1);
           border-radius: 10px;
           overflow: hidden;
@@ -205,16 +208,38 @@ export default function Skills() {
           height: 100%;
           background: var(--gradient-primary);
           border-radius: 10px;
-          transition: width 2s ease;
+          transition: width 2.5s ease;
+          box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
         }
 
         @media (max-width: 768px) {
           .skills-grid {
             grid-template-columns: 1fr;
+            gap: 2.5rem;
+          }
+
+          .skill-list {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          }
+
+          .skill-category {
+            padding: 2.5rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .skill-category {
+            padding: 2rem;
           }
 
           .skill-list {
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+          }
+
+          .skill-tag {
+            padding: 0.8rem 1.2rem;
+            font-size: 0.9rem;
           }
         }
       `}</style>

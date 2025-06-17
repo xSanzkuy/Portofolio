@@ -14,7 +14,6 @@ import SplashCursor from '@/components/SplashCursor';
 import LoadingScreen from '@/components/LoadingScreen';
 import ThemeToggle from '@/components/ThemeToggle';
 import DownloadCV from '@/components/DownloadCV';
-import CodeLanyard from '@/components/CodeLanyard';
 import FloatingElements from '@/components/FloatingElements';
 import ScrollProgress from '@/components/ScrollProgress';
 import ParticleSystem from '@/components/ParticleSystem';
@@ -43,7 +42,6 @@ export default function Home() {
       <ScrollProgress />
       <ParticleSystem />
       <FloatingElements />
-      <CodeLanyard />
       
       <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
       <DownloadCV />

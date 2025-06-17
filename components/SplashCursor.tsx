@@ -74,6 +74,9 @@ export default function SplashCursor({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Keep normal cursor visible
+    document.body.style.cursor = 'auto';
+
     let pointers: Pointer[] = [pointerPrototype()];
 
     let config = {
@@ -1492,6 +1495,11 @@ export default function SplashCursor({
         updatePointerUpData(pointer);
       }
     });
+
+    return () => {
+      // Cleanup
+      document.body.style.cursor = 'auto';
+    };
   }, [
     SIM_RESOLUTION,
     DYE_RESOLUTION,
