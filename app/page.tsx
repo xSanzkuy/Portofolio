@@ -17,6 +17,7 @@ import DownloadCV from '@/components/DownloadCV';
 import FloatingElements from '@/components/FloatingElements';
 import ScrollProgress from '@/components/ScrollProgress';
 import ParticleSystem from '@/components/ParticleSystem';
+import CodeLanyard from '@/components/CodeLanyard';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -42,6 +43,7 @@ export default function Home() {
       <ScrollProgress />
       <ParticleSystem />
       <FloatingElements />
+      <CodeLanyard />
       
       <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
       <DownloadCV />

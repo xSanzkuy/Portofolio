@@ -1,447 +1,411 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Canvas, extend, useFrame } from '@react-three/fiber';
+import {
+  useGLTF,
+  useTexture,
+  Environment,
+  Lightformer,
+} from '@react-three/drei';
+import {
+  BallCollider,
+  CuboidCollider,
+  Physics,
+  RigidBody,
+  useRopeJoint,
+  useSphericalJoint,
+  RigidBodyProps,
+} from '@react-three/rapier';
+import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
+import * as THREE from 'three';
 
-export default function CodeLanyard() {
-  const [position, setPosition] = useState({ x: 100, y: 200 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [isFlipped, setIsFlipped] = useState(false);
-  const lanyardRef = useRef<HTMLDivElement>(null);
+extend({ MeshLineGeometry, MeshLineMaterial });
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    const rect = lanyardRef.current?.getBoundingClientRect();
-    if (rect) {
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-    }
-  };
+interface LanyardProps {
+  position?: [number, number, number];
+  gravity?: [number, number, number];
+  fov?: number;
+  transparent?: boolean;
+}
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleDoubleClick = () => {
-    setIsFlipped(!isFlipped);
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, dragOffset]);
-
+export default function CodeLanyard({
+  position = [0, 0, 30],
+  gravity = [0, -40, 0],
+  fov = 20,
+  transparent = true,
+}: LanyardProps) {
   return (
-    <div
-      ref={lanyardRef}
-      className={`code-lanyard ${isDragging ? 'dragging' : ''} ${isFlipped ? 'flipped' : ''}`}
-      style={{
-        left: position.x,
-        top: position.y,
-      }}
-      onMouseDown={handleMouseDown}
-      onDoubleClick={handleDoubleClick}
-    >
-      <div className="lanyard-cord"></div>
-      <div className="lanyard-card">
-        <div className="card-front">
-          <div className="card-header">
-            <div className="avatar">
-              <i className="fas fa-code"></i>
-            </div>
-            <div className="status-indicator"></div>
-          </div>
-          <div className="card-content">
-            <h3>Sandi Kurniawan</h3>
-            <p>Frontend Developer</p>
-            <div className="tech-badges">
-              <span className="tech-badge">React</span>
-              <span className="tech-badge">Next.js</span>
-              <span className="tech-badge">Vue.js</span>
-            </div>
-            <div className="card-footer">
-              <span className="location">
-                <i className="fas fa-map-marker-alt"></i>
-                Yogyakarta, ID
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="card-back">
-          <div className="qr-code">
-            <div className="qr-pattern">
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-              <div className="qr-square"></div>
-            </div>
-          </div>
-          <p>Scan to view portfolio</p>
-          <div className="social-links-mini">
-            <i className="fab fa-github"></i>
-            <i className="fab fa-linkedin"></i>
-            <i className="fas fa-envelope"></i>
-          </div>
-        </div>
-      </div>
-      <div className="drag-hint">Double-click to flip • Drag to move</div>
+    <div className="lanyard-wrapper">
+      <Canvas
+        camera={{ position, fov }}
+        gl={{ alpha: transparent }}
+        onCreated={({ gl }) =>
+          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
+        }
+      >
+        <ambientLight intensity={Math.PI} />
+        <Physics gravity={gravity} timeStep={1 / 60}>
+          <Band />
+        </Physics>
+        <Environment blur={0.75}>
+          <Lightformer
+            intensity={2}
+            color="white"
+            position={[0, -1, 5]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
+          <Lightformer
+            intensity={3}
+            color="white"
+            position={[-1, -1, 1]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
+          <Lightformer
+            intensity={3}
+            color="white"
+            position={[1, 1, 1]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
+          <Lightformer
+            intensity={10}
+            color="white"
+            position={[-10, 0, 14]}
+            rotation={[0, Math.PI / 2, Math.PI / 3]}
+            scale={[100, 10, 1]}
+          />
+        </Environment>
+      </Canvas>
 
       <style jsx>{`
-        .code-lanyard {
+        .lanyard-wrapper {
           position: fixed;
-          z-index: 1000;
-          cursor: grab;
-          user-select: none;
-          transform-style: preserve-3d;
-          transition: transform 0.2s ease;
-        }
-
-        .code-lanyard.dragging {
-          cursor: grabbing;
-          transform: scale(1.05) rotate(5deg);
-          z-index: 1001;
-        }
-
-        .lanyard-cord {
-          width: 3px;
-          height: 50px;
-          background: linear-gradient(180deg, #6366f1, #8b5cf6, #a855f7);
-          margin: 0 auto 10px;
-          border-radius: 2px;
-          position: relative;
-          box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
-        }
-
-        .lanyard-cord::before {
-          content: '';
-          position: absolute;
-          top: -10px;
-          left: -5px;
-          width: 13px;
-          height: 10px;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
-          border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-          box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
-        }
-
-        .lanyard-card {
-          width: 300px;
-          height: 190px;
-          position: relative;
-          transform-style: preserve-3d;
-          transition: transform 0.6s ease;
-          perspective: 1000px;
-        }
-
-        .code-lanyard.flipped .lanyard-card {
-          transform: rotateY(180deg);
-        }
-
-        .card-front,
-        .card-back {
-          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
-          backface-visibility: hidden;
-          border-radius: 20px;
-          box-shadow: 
-            0 20px 40px rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(255, 255, 255, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          overflow: hidden;
-        }
-
-        .card-front {
-          background: linear-gradient(135deg, 
-            rgba(99, 102, 241, 0.1) 0%, 
-            rgba(139, 92, 246, 0.1) 50%, 
-            rgba(168, 85, 247, 0.1) 100%);
-          backdrop-filter: blur(25px);
-          color: var(--text-light);
-        }
-
-        .card-back {
-          background: linear-gradient(135deg, 
-            rgba(168, 85, 247, 0.1) 0%, 
-            rgba(139, 92, 246, 0.1) 50%,
-            rgba(99, 102, 241, 0.1) 100%);
-          backdrop-filter: blur(25px);
-          color: var(--text-light);
-          transform: rotateY(180deg);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 25px;
-        }
-
-        .card-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 25px 25px 15px;
-        }
-
-        .avatar {
-          width: 60px;
-          height: 60px;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.8rem;
-          color: white;
-          box-shadow: 
-            0 8px 25px rgba(139, 92, 246, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        .status-indicator {
-          width: 14px;
-          height: 14px;
-          background: linear-gradient(135deg, #10b981, #34d399);
-          border-radius: 50%;
-          animation: pulse 2s infinite;
-          box-shadow: 
-            0 0 15px rgba(16, 185, 129, 0.6),
-            0 0 0 3px rgba(16, 185, 129, 0.2);
-        }
-
-        .card-content {
-          padding: 0 25px 25px;
-        }
-
-        .card-content h3 {
-          font-size: 1.4rem;
-          font-weight: 700;
-          margin-bottom: 6px;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .card-content p {
-          color: var(--text-muted);
-          font-size: 1rem;
-          margin-bottom: 15px;
-          font-weight: 500;
-        }
-
-        .tech-badges {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 18px;
-          flex-wrap: wrap;
-        }
-
-        .tech-badge {
-          background: rgba(139, 92, 246, 0.2);
-          color: #a855f7;
-          padding: 4px 10px;
-          border-radius: 15px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          border: 1px solid rgba(139, 92, 246, 0.3);
-          backdrop-filter: blur(10px);
-          transition: all 0.3s ease;
-        }
-
-        .tech-badge:hover {
-          background: rgba(139, 92, 246, 0.3);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-        }
-
-        .card-footer {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .location {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          color: var(--text-muted);
-          font-size: 0.85rem;
-          font-weight: 500;
-        }
-
-        .location i {
-          color: #6366f1;
-          font-size: 0.9rem;
-        }
-
-        .qr-code {
-          width: 90px;
-          height: 90px;
-          background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-          border-radius: 12px;
-          margin-bottom: 18px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          overflow: hidden;
-          box-shadow: 
-            0 8px 25px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.8);
-        }
-
-        .qr-pattern {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 4px;
-          padding: 15px;
-        }
-
-        .qr-square {
-          width: 12px;
-          height: 12px;
-          background: linear-gradient(135deg, #1e293b, #334155);
-          border-radius: 2px;
-          animation: qrPulse 2s ease-in-out infinite;
-        }
-
-        .qr-square:nth-child(1) { animation-delay: 0s; }
-        .qr-square:nth-child(2) { animation-delay: 0.2s; }
-        .qr-square:nth-child(3) { animation-delay: 0.4s; }
-        .qr-square:nth-child(4) { animation-delay: 0.6s; }
-        .qr-square:nth-child(5) { animation-delay: 0.8s; }
-        .qr-square:nth-child(6) { animation-delay: 1s; }
-        .qr-square:nth-child(7) { animation-delay: 1.2s; }
-        .qr-square:nth-child(8) { animation-delay: 1.4s; }
-        .qr-square:nth-child(9) { animation-delay: 1.6s; }
-
-        @keyframes qrPulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(0.9); }
-        }
-
-        .card-back p {
-          font-size: 0.9rem;
-          color: var(--text-muted);
-          margin-bottom: 15px;
-          font-weight: 500;
-        }
-
-        .social-links-mini {
-          display: flex;
-          gap: 18px;
-          margin-top: 12px;
-        }
-
-        .social-links-mini i {
-          color: #6366f1;
-          font-size: 1.3rem;
-          opacity: 0.8;
-          transition: all 0.3s ease;
-          cursor: pointer;
-        }
-
-        .social-links-mini i:hover {
-          opacity: 1;
-          transform: translateY(-2px) scale(1.1);
-          color: #8b5cf6;
-        }
-
-        .drag-hint {
-          position: absolute;
-          top: -35px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(30, 41, 59, 0.9));
-          color: white;
-          padding: 8px 15px;
-          border-radius: 25px;
-          font-size: 0.75rem;
-          white-space: nowrap;
-          opacity: 0;
-          transition: all 0.3s ease;
           pointer-events: none;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+          z-index: 999;
         }
 
-        .code-lanyard:hover .drag-hint {
-          opacity: 1;
-          transform: translateX(-50%) translateY(-5px);
-        }
-
-        @keyframes pulse {
-          0%, 100% { 
-            transform: scale(1);
-            box-shadow: 
-              0 0 15px rgba(16, 185, 129, 0.6),
-              0 0 0 3px rgba(16, 185, 129, 0.2);
-          }
-          50% { 
-            transform: scale(1.1);
-            box-shadow: 
-              0 0 25px rgba(16, 185, 129, 0.8),
-              0 0 0 6px rgba(16, 185, 129, 0.3);
-          }
-        }
-
-        @media (max-width: 768px) {
-          .lanyard-card {
-            width: 260px;
-            height: 165px;
-          }
-
-          .card-content h3 {
-            font-size: 1.2rem;
-          }
-
-          .tech-badge {
-            font-size: 0.7rem;
-            padding: 3px 8px;
-          }
-
-          .avatar {
-            width: 50px;
-            height: 50px;
-            font-size: 1.5rem;
-          }
-
-          .qr-code {
-            width: 75px;
-            height: 75px;
-          }
-
-          .qr-square {
-            width: 10px;
-            height: 10px;
-          }
+        .lanyard-wrapper canvas {
+          pointer-events: auto !important;
         }
       `}</style>
     </div>
   );
+}
+
+interface BandProps {
+  maxSpeed?: number;
+  minSpeed?: number;
+}
+
+function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
+  const band = useRef<any>(null);
+  const fixed = useRef<any>(null);
+  const j1 = useRef<any>(null);
+  const j2 = useRef<any>(null);
+  const j3 = useRef<any>(null);
+  const card = useRef<any>(null);
+
+  const vec = new THREE.Vector3();
+  const ang = new THREE.Vector3();
+  const rot = new THREE.Vector3();
+  const dir = new THREE.Vector3();
+
+  const segmentProps: any = {
+    type: "dynamic" as RigidBodyProps["type"],
+    canSleep: true,
+    colliders: false,
+    angularDamping: 4,
+    linearDamping: 4,
+  };
+
+  // Create simple geometries instead of loading GLB
+  const cardGeometry = new THREE.BoxGeometry(1.6, 2.25, 0.02);
+  const clipGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.3, 8);
+  const clampGeometry = new THREE.BoxGeometry(0.2, 0.1, 0.1);
+
+  // Create simple materials
+  const cardMaterial = new THREE.MeshPhysicalMaterial({
+    color: '#1a1a2e',
+    clearcoat: 1,
+    clearcoatRoughness: 0.15,
+    roughness: 0.9,
+    metalness: 0.8,
+  });
+
+  const metalMaterial = new THREE.MeshStandardMaterial({
+    color: '#888888',
+    metalness: 0.8,
+    roughness: 0.3,
+  });
+
+  // Create lanyard texture pattern
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d')!;
+  
+  // Create gradient background
+  const gradient = ctx.createLinearGradient(0, 0, 256, 0);
+  gradient.addColorStop(0, '#6366f1');
+  gradient.addColorStop(0.5, '#8b5cf6');
+  gradient.addColorStop(1, '#06b6d4');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 256, 32);
+  
+  // Add pattern
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  for (let i = 0; i < 256; i += 16) {
+    ctx.fillRect(i, 0, 8, 32);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+  const [curve] = useState(
+    () =>
+      new THREE.CatmullRomCurve3([
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+      ])
+  );
+  const [dragged, drag] = useState<false | THREE.Vector3>(false);
+  const [hovered, hover] = useState(false);
+
+  const [isSmall, setIsSmall] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 1024;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = (): void => {
+      setIsSmall(window.innerWidth < 1024);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return (): void => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
+  useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1]);
+  useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1]);
+  useSphericalJoint(j3, card, [
+    [0, 0, 0],
+    [0, 1.45, 0],
+  ]);
+
+  useEffect(() => {
+    if (hovered) {
+      document.body.style.cursor = dragged ? "grabbing" : "grab";
+      return () => {
+        document.body.style.cursor = "auto";
+      };
+    }
+  }, [hovered, dragged]);
+
+  useFrame((state, delta) => {
+    if (dragged && typeof dragged !== "boolean") {
+      vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
+      dir.copy(vec).sub(state.camera.position).normalize();
+      vec.add(dir.multiplyScalar(state.camera.position.length()));
+      [card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp());
+      card.current?.setNextKinematicTranslation({
+        x: vec.x - dragged.x,
+        y: vec.y - dragged.y,
+        z: vec.z - dragged.z,
+      });
+    }
+    if (fixed.current) {
+      [j1, j2].forEach((ref) => {
+        if (!ref.current.lerped)
+          ref.current.lerped = new THREE.Vector3().copy(
+            ref.current.translation()
+          );
+        const clampedDistance = Math.max(
+          0.1,
+          Math.min(1, ref.current.lerped.distanceTo(ref.current.translation()))
+        );
+        ref.current.lerped.lerp(
+          ref.current.translation(),
+          delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed))
+        );
+      });
+      curve.points[0].copy(j3.current.translation());
+      curve.points[1].copy(j2.current.lerped);
+      curve.points[2].copy(j1.current.lerped);
+      curve.points[3].copy(fixed.current.translation());
+      band.current.geometry.setPoints(curve.getPoints(32));
+      ang.copy(card.current.angvel());
+      rot.copy(card.current.rotation());
+      card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
+    }
+  });
+
+  curve.curveType = "chordal";
+
+  return (
+    <>
+      <group position={[0, 4, 0]}>
+        <RigidBody
+          ref={fixed}
+          {...segmentProps}
+          type={"fixed" as RigidBodyProps["type"]}
+        />
+        <RigidBody
+          position={[0.5, 0, 0]}
+          ref={j1}
+          {...segmentProps}
+          type={"dynamic" as RigidBodyProps["type"]}
+        >
+          <BallCollider args={[0.1]} />
+        </RigidBody>
+        <RigidBody
+          position={[1, 0, 0]}
+          ref={j2}
+          {...segmentProps}
+          type={"dynamic" as RigidBodyProps["type"]}
+        >
+          <BallCollider args={[0.1]} />
+        </RigidBody>
+        <RigidBody
+          position={[1.5, 0, 0]}
+          ref={j3}
+          {...segmentProps}
+          type={"dynamic" as RigidBodyProps["type"]}
+        >
+          <BallCollider args={[0.1]} />
+        </RigidBody>
+        <RigidBody
+          position={[2, 0, 0]}
+          ref={card}
+          {...segmentProps}
+          type={
+            dragged
+              ? ("kinematicPosition" as RigidBodyProps["type"])
+              : ("dynamic" as RigidBodyProps["type"])
+          }
+        >
+          <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          <group
+            scale={2.25}
+            position={[0, -1.2, -0.05]}
+            onPointerOver={() => hover(true)}
+            onPointerOut={() => hover(false)}
+            onPointerUp={(e: any) => {
+              e.target.releasePointerCapture(e.pointerId);
+              drag(false);
+            }}
+            onPointerDown={(e: any) => {
+              e.target.setPointerCapture(e.pointerId);
+              drag(
+                new THREE.Vector3()
+                  .copy(e.point)
+                  .sub(vec.copy(card.current.translation()))
+              );
+            }}
+          >
+            {/* Card */}
+            <mesh geometry={cardGeometry} material={cardMaterial}>
+              {/* Add code-like pattern on the card */}
+              <meshBasicMaterial attach="material-0" color="#1a1a2e" />
+              <meshBasicMaterial attach="material-1" color="#1a1a2e" />
+              <meshBasicMaterial attach="material-2" color="#1a1a2e" />
+              <meshBasicMaterial attach="material-3" color="#1a1a2e" />
+              <meshBasicMaterial attach="material-4" color="#0f0f23">
+                <primitive attach="map" object={createCodeTexture()} />
+              </meshBasicMaterial>
+              <meshBasicMaterial attach="material-5" color="#1a1a2e" />
+            </mesh>
+            
+            {/* Clip */}
+            <mesh 
+              geometry={clipGeometry} 
+              material={metalMaterial}
+              position={[0, 1, 0.02]}
+            />
+            
+            {/* Clamp */}
+            <mesh 
+              geometry={clampGeometry} 
+              material={metalMaterial}
+              position={[0, 1, 0.05]}
+            />
+          </group>
+        </RigidBody>
+      </group>
+      <mesh ref={band}>
+        <meshLineGeometry />
+        <meshLineMaterial
+          color="white"
+          depthTest={false}
+          resolution={isSmall ? [1000, 2000] : [1000, 1000]}
+          useMap
+          map={texture}
+          repeat={[-4, 1]}
+          lineWidth={1}
+        />
+      </mesh>
+    </>
+  );
+}
+
+function createCodeTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d')!;
+  
+  // Dark background
+  ctx.fillStyle = '#0f0f23';
+  ctx.fillRect(0, 0, 512, 512);
+  
+  // Code-like text
+  ctx.fillStyle = '#00ff88';
+  ctx.font = '12px monospace';
+  
+  const codeLines = [
+    'const developer = {',
+    '  name: "Sandi Kurniawan",',
+    '  role: "Frontend Developer",',
+    '  skills: ["React", "Next.js",',
+    '           "Vue.js", "Laravel"],',
+    '  location: "Yogyakarta, ID",',
+    '  passion: "Creating amazing',
+    '           web experiences"',
+    '};',
+    '',
+    'function buildAwesome() {',
+    '  return developer.skills',
+    '    .map(skill => skill + "💻")',
+    '    .join(" + ");',
+    '}',
+    '',
+    '// Always learning 🚀',
+    'console.log("Hello World!");'
+  ];
+  
+  codeLines.forEach((line, i) => {
+    ctx.fillText(line, 20, 30 + i * 16);
+  });
+  
+  // Add some decorative elements
+  ctx.fillStyle = '#6366f1';
+  ctx.fillRect(10, 10, 4, 492);
+  
+  ctx.fillStyle = '#8b5cf6';
+  for (let i = 0; i < 10; i++) {
+    ctx.fillRect(480 + Math.random() * 20, Math.random() * 500, 2, 2);
+  }
+  
+  return new THREE.CanvasTexture(canvas);
 }
