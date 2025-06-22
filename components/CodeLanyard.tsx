@@ -1,84 +1,68 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Canvas, extend, useFrame } from '@react-three/fiber';
-import {
-  useGLTF,
-  useTexture,
-  Environment,
-  Lightformer,
-} from '@react-three/drei';
-import {
-  BallCollider,
-  CuboidCollider,
-  Physics,
-  RigidBody,
-  useRopeJoint,
-  useSphericalJoint,
-  RigidBodyProps,
-} from '@react-three/rapier';
-import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
-import * as THREE from 'three';
 
-extend({ MeshLineGeometry, MeshLineMaterial });
+export default function CodeLanyard() {
+  const [isClient, setIsClient] = useState(false);
 
-interface LanyardProps {
-  position?: [number, number, number];
-  gravity?: [number, number, number];
-  fov?: number;
-  transparent?: boolean;
-}
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-export default function CodeLanyard({
-  position = [0, 0, 30],
-  gravity = [0, -40, 0],
-  fov = 20,
-  transparent = true,
-}: LanyardProps) {
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div className="lanyard-wrapper">
-      <Canvas
-        camera={{ position, fov }}
-        gl={{ alpha: transparent }}
-        onCreated={({ gl }) =>
-          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
-        }
-      >
-        <ambientLight intensity={Math.PI} />
-        <Physics gravity={gravity} timeStep={1 / 60}>
-          <Band />
-        </Physics>
-        <Environment blur={0.75}>
-          <Lightformer
-            intensity={2}
-            color="white"
-            position={[0, -1, 5]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[-1, -1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[1, 1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={10}
-            color="white"
-            position={[-10, 0, 14]}
-            rotation={[0, Math.PI / 2, Math.PI / 3]}
-            scale={[100, 10, 1]}
-          />
-        </Environment>
-      </Canvas>
+      <div className="code-lanyard">
+        <div className="lanyard-strap"></div>
+        <div className="code-card">
+          <div className="card-header">
+            <div className="card-clip"></div>
+            <div className="card-title">Developer.js</div>
+          </div>
+          <div className="card-content">
+            <div className="code-line">
+              <span className="code-keyword">const</span>{' '}
+              <span className="code-variable">developer</span>{' '}
+              <span className="code-operator">=</span>{' '}
+              <span className="code-bracket">{'{'}</span>
+            </div>
+            <div className="code-line code-indent">
+              <span className="code-property">name</span>
+              <span className="code-operator">:</span>{' '}
+              <span className="code-string">"Sandi Kurniawan"</span>
+              <span className="code-operator">,</span>
+            </div>
+            <div className="code-line code-indent">
+              <span className="code-property">role</span>
+              <span className="code-operator">:</span>{' '}
+              <span className="code-string">"Frontend Developer"</span>
+              <span className="code-operator">,</span>
+            </div>
+            <div className="code-line code-indent">
+              <span className="code-property">skills</span>
+              <span className="code-operator">:</span>{' '}
+              <span className="code-bracket">[</span>
+              <span className="code-string">"React"</span>
+              <span className="code-operator">,</span>{' '}
+              <span className="code-string">"Next.js"</span>
+              <span className="code-bracket">]</span>
+              <span className="code-operator">,</span>
+            </div>
+            <div className="code-line code-indent">
+              <span className="code-property">location</span>
+              <span className="code-operator">:</span>{' '}
+              <span className="code-string">"Yogyakarta, ID"</span>
+            </div>
+            <div className="code-line">
+              <span className="code-bracket">{'}'}</span>
+              <span className="code-operator">;</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <style jsx>{`
         .lanyard-wrapper {
@@ -89,323 +73,203 @@ export default function CodeLanyard({
           height: 100%;
           pointer-events: none;
           z-index: 999;
+          overflow: hidden;
         }
 
-        .lanyard-wrapper canvas {
-          pointer-events: auto !important;
+        .code-lanyard {
+          position: absolute;
+          top: 20px;
+          right: 100px;
+          pointer-events: auto;
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .lanyard-strap {
+          width: 4px;
+          height: 150px;
+          background: linear-gradient(180deg, #6366f1, #8b5cf6, #06b6d4);
+          margin: 0 auto 10px;
+          border-radius: 2px;
+          position: relative;
+          box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .lanyard-strap::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 12px;
+          height: 12px;
+          background: #374151;
+          border-radius: 50%;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-card {
+          background: linear-gradient(135deg, #1e293b, #0f172a);
+          border-radius: 12px;
+          padding: 20px;
+          width: 280px;
+          border: 1px solid rgba(99, 102, 241, 0.3);
+          box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.4),
+            0 0 20px rgba(99, 102, 241, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(20px);
+          cursor: grab;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .code-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3px;
+          background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+        }
+
+        .code-card:hover {
+          transform: translateY(-5px) scale(1.02);
+          box-shadow: 
+            0 25px 50px rgba(0, 0, 0, 0.5),
+            0 0 30px rgba(99, 102, 241, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .code-card:active {
+          cursor: grabbing;
+          transform: scale(0.98);
+        }
+
+        .card-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 15px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-clip {
+          width: 20px;
+          height: 20px;
+          background: linear-gradient(135deg, #9ca3af, #6b7280);
+          border-radius: 3px;
+          position: relative;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-clip::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 8px;
+          height: 2px;
+          background: #374151;
+          border-radius: 1px;
+        }
+
+        .card-title {
+          color: #f8fafc;
+          font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+          font-size: 14px;
+          font-weight: 600;
+          flex: 1;
+        }
+
+        .card-content {
+          font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+          font-size: 12px;
+          line-height: 1.6;
+        }
+
+        .code-line {
+          margin-bottom: 4px;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 2px;
+        }
+
+        .code-indent {
+          padding-left: 20px;
+        }
+
+        .code-keyword {
+          color: #c792ea;
+          font-weight: 600;
+        }
+
+        .code-variable {
+          color: #82aaff;
+        }
+
+        .code-property {
+          color: #ffcb6b;
+        }
+
+        .code-string {
+          color: #c3e88d;
+        }
+
+        .code-operator {
+          color: #89ddff;
+        }
+
+        .code-bracket {
+          color: #f78c6c;
+          font-weight: 600;
+        }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          25% {
+            transform: translateY(-10px) rotate(1deg);
+          }
+          50% {
+            transform: translateY(-15px) rotate(0deg);
+          }
+          75% {
+            transform: translateY(-10px) rotate(-1deg);
+          }
+        }
+
+        @media (max-width: 1024px) {
+          .code-lanyard {
+            right: 20px;
+            top: 80px;
+          }
+
+          .code-card {
+            width: 240px;
+            padding: 15px;
+          }
+
+          .card-content {
+            font-size: 11px;
+          }
+
+          .lanyard-strap {
+            height: 100px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .code-lanyard {
+            display: none;
+          }
         }
       `}</style>
     </div>
   );
-}
-
-interface BandProps {
-  maxSpeed?: number;
-  minSpeed?: number;
-}
-
-function Band({ maxSpeed = 50, minSpeed = 0 }: BandProps) {
-  const band = useRef<any>(null);
-  const fixed = useRef<any>(null);
-  const j1 = useRef<any>(null);
-  const j2 = useRef<any>(null);
-  const j3 = useRef<any>(null);
-  const card = useRef<any>(null);
-
-  const vec = new THREE.Vector3();
-  const ang = new THREE.Vector3();
-  const rot = new THREE.Vector3();
-  const dir = new THREE.Vector3();
-
-  const segmentProps: any = {
-    type: "dynamic" as RigidBodyProps["type"],
-    canSleep: true,
-    colliders: false,
-    angularDamping: 4,
-    linearDamping: 4,
-  };
-
-  // Create simple geometries instead of loading GLB
-  const cardGeometry = new THREE.BoxGeometry(1.6, 2.25, 0.02);
-  const clipGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.3, 8);
-  const clampGeometry = new THREE.BoxGeometry(0.2, 0.1, 0.1);
-
-  // Create simple materials
-  const cardMaterial = new THREE.MeshPhysicalMaterial({
-    color: '#1a1a2e',
-    clearcoat: 1,
-    clearcoatRoughness: 0.15,
-    roughness: 0.9,
-    metalness: 0.8,
-  });
-
-  const metalMaterial = new THREE.MeshStandardMaterial({
-    color: '#888888',
-    metalness: 0.8,
-    roughness: 0.3,
-  });
-
-  // Create lanyard texture pattern
-  const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 32;
-  const ctx = canvas.getContext('2d')!;
-  
-  // Create gradient background
-  const gradient = ctx.createLinearGradient(0, 0, 256, 0);
-  gradient.addColorStop(0, '#6366f1');
-  gradient.addColorStop(0.5, '#8b5cf6');
-  gradient.addColorStop(1, '#06b6d4');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 256, 32);
-  
-  // Add pattern
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-  for (let i = 0; i < 256; i += 16) {
-    ctx.fillRect(i, 0, 8, 32);
-  }
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-
-  const [curve] = useState(
-    () =>
-      new THREE.CatmullRomCurve3([
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-      ])
-  );
-  const [dragged, drag] = useState<false | THREE.Vector3>(false);
-  const [hovered, hover] = useState(false);
-
-  const [isSmall, setIsSmall] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return window.innerWidth < 1024;
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    const handleResize = (): void => {
-      setIsSmall(window.innerWidth < 1024);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return (): void => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
-  useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1]);
-  useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1]);
-  useSphericalJoint(j3, card, [
-    [0, 0, 0],
-    [0, 1.45, 0],
-  ]);
-
-  useEffect(() => {
-    if (hovered) {
-      document.body.style.cursor = dragged ? "grabbing" : "grab";
-      return () => {
-        document.body.style.cursor = "auto";
-      };
-    }
-  }, [hovered, dragged]);
-
-  useFrame((state, delta) => {
-    if (dragged && typeof dragged !== "boolean") {
-      vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
-      dir.copy(vec).sub(state.camera.position).normalize();
-      vec.add(dir.multiplyScalar(state.camera.position.length()));
-      [card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp());
-      card.current?.setNextKinematicTranslation({
-        x: vec.x - dragged.x,
-        y: vec.y - dragged.y,
-        z: vec.z - dragged.z,
-      });
-    }
-    if (fixed.current) {
-      [j1, j2].forEach((ref) => {
-        if (!ref.current.lerped)
-          ref.current.lerped = new THREE.Vector3().copy(
-            ref.current.translation()
-          );
-        const clampedDistance = Math.max(
-          0.1,
-          Math.min(1, ref.current.lerped.distanceTo(ref.current.translation()))
-        );
-        ref.current.lerped.lerp(
-          ref.current.translation(),
-          delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed))
-        );
-      });
-      curve.points[0].copy(j3.current.translation());
-      curve.points[1].copy(j2.current.lerped);
-      curve.points[2].copy(j1.current.lerped);
-      curve.points[3].copy(fixed.current.translation());
-      band.current.geometry.setPoints(curve.getPoints(32));
-      ang.copy(card.current.angvel());
-      rot.copy(card.current.rotation());
-      card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
-    }
-  });
-
-  curve.curveType = "chordal";
-
-  return (
-    <>
-      <group position={[0, 4, 0]}>
-        <RigidBody
-          ref={fixed}
-          {...segmentProps}
-          type={"fixed" as RigidBodyProps["type"]}
-        />
-        <RigidBody
-          position={[0.5, 0, 0]}
-          ref={j1}
-          {...segmentProps}
-          type={"dynamic" as RigidBodyProps["type"]}
-        >
-          <BallCollider args={[0.1]} />
-        </RigidBody>
-        <RigidBody
-          position={[1, 0, 0]}
-          ref={j2}
-          {...segmentProps}
-          type={"dynamic" as RigidBodyProps["type"]}
-        >
-          <BallCollider args={[0.1]} />
-        </RigidBody>
-        <RigidBody
-          position={[1.5, 0, 0]}
-          ref={j3}
-          {...segmentProps}
-          type={"dynamic" as RigidBodyProps["type"]}
-        >
-          <BallCollider args={[0.1]} />
-        </RigidBody>
-        <RigidBody
-          position={[2, 0, 0]}
-          ref={card}
-          {...segmentProps}
-          type={
-            dragged
-              ? ("kinematicPosition" as RigidBodyProps["type"])
-              : ("dynamic" as RigidBodyProps["type"])
-          }
-        >
-          <CuboidCollider args={[0.8, 1.125, 0.01]} />
-          <group
-            scale={2.25}
-            position={[0, -1.2, -0.05]}
-            onPointerOver={() => hover(true)}
-            onPointerOut={() => hover(false)}
-            onPointerUp={(e: any) => {
-              e.target.releasePointerCapture(e.pointerId);
-              drag(false);
-            }}
-            onPointerDown={(e: any) => {
-              e.target.setPointerCapture(e.pointerId);
-              drag(
-                new THREE.Vector3()
-                  .copy(e.point)
-                  .sub(vec.copy(card.current.translation()))
-              );
-            }}
-          >
-            {/* Card */}
-            <mesh geometry={cardGeometry} material={cardMaterial}>
-              {/* Add code-like pattern on the card */}
-              <meshBasicMaterial attach="material-0" color="#1a1a2e" />
-              <meshBasicMaterial attach="material-1" color="#1a1a2e" />
-              <meshBasicMaterial attach="material-2" color="#1a1a2e" />
-              <meshBasicMaterial attach="material-3" color="#1a1a2e" />
-              <meshBasicMaterial attach="material-4" color="#0f0f23">
-                <primitive attach="map" object={createCodeTexture()} />
-              </meshBasicMaterial>
-              <meshBasicMaterial attach="material-5" color="#1a1a2e" />
-            </mesh>
-            
-            {/* Clip */}
-            <mesh 
-              geometry={clipGeometry} 
-              material={metalMaterial}
-              position={[0, 1, 0.02]}
-            />
-            
-            {/* Clamp */}
-            <mesh 
-              geometry={clampGeometry} 
-              material={metalMaterial}
-              position={[0, 1, 0.05]}
-            />
-          </group>
-        </RigidBody>
-      </group>
-      <mesh ref={band}>
-        <meshLineGeometry />
-        <meshLineMaterial
-          color="white"
-          depthTest={false}
-          resolution={isSmall ? [1000, 2000] : [1000, 1000]}
-          useMap
-          map={texture}
-          repeat={[-4, 1]}
-          lineWidth={1}
-        />
-      </mesh>
-    </>
-  );
-}
-
-function createCodeTexture() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext('2d')!;
-  
-  // Dark background
-  ctx.fillStyle = '#0f0f23';
-  ctx.fillRect(0, 0, 512, 512);
-  
-  // Code-like text
-  ctx.fillStyle = '#00ff88';
-  ctx.font = '12px monospace';
-  
-  const codeLines = [
-    'const developer = {',
-    '  name: "Sandi Kurniawan",',
-    '  role: "Frontend Developer",',
-    '  skills: ["React", "Next.js",',
-    '           "Vue.js", "Laravel"],',
-    '  location: "Yogyakarta, ID",',
-    '  passion: "Creating amazing',
-    '           web experiences"',
-    '};',
-    '',
-    'function buildAwesome() {',
-    '  return developer.skills',
-    '    .map(skill => skill + "💻")',
-    '    .join(" + ");',
-    '}',
-    '',
-    '// Always learning 🚀',
-    'console.log("Hello World!");'
-  ];
-  
-  codeLines.forEach((line, i) => {
-    ctx.fillText(line, 20, 30 + i * 16);
-  });
-  
-  // Add some decorative elements
-  ctx.fillStyle = '#6366f1';
-  ctx.fillRect(10, 10, 4, 492);
-  
-  ctx.fillStyle = '#8b5cf6';
-  for (let i = 0; i < 10; i++) {
-    ctx.fillRect(480 + Math.random() * 20, Math.random() * 500, 2, 2);
-  }
-  
-  return new THREE.CanvasTexture(canvas);
 }
