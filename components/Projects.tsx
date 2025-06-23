@@ -25,45 +25,64 @@ export default function Projects() {
 
   const projects = [
     {
+      title: 'Dicoding Story',
+      description: 'Sistem berbasis web yang memungkinkan pengguna menampilkan proyek dan pembaruan dalam format cerita seperti Instagram story.',
+      tech: ['React.js', 'Firebase', 'CSS', 'JavaScript'],
+      icon: 'fas fa-play-circle',
+      liveDemoLink: 'https://dicodingggg.netlify.app',
+      githubLink: 'https://github.com/your-repository/dicoding-story',
+    },
+    {
+      title: 'Booklist Library',
+      description: 'Sistem pencarian dan manajemen buku untuk perpustakaan, memungkinkan pengguna mencari dan mengelola buku.',
+      tech: ['React.js', 'Node.js', 'MongoDB'],
+      icon: 'fas fa-book',
+      liveDemoLink: 'https://booklist-library.netlify.app',
+      githubLink: 'https://github.com/your-repository/booklist-library',
+    },
+    {
+      title: 'Notes App',
+      description: 'Aplikasi pencatatan yang menggunakan API Dicoding untuk mengambil dan menyimpan catatan.',
+      tech: ['React.js', 'API Integration', 'CSS'],
+      icon: 'fas fa-sticky-note',
+      liveDemoLink: 'https://notes-app-pal.netlify.app',
+      githubLink: 'https://github.com/your-repository/notes-app',
+    },
+    {
       title: 'Sistem Pencatatan Gudang Berbasis Web',
-      description: 'Aplikasi web untuk mengelola inventori gudang dengan fitur pencatatan barang masuk dan keluar, laporan stok real-time, manajemen supplier, dan dashboard analytics untuk monitoring stok secara efisien.',
+      description: 'Aplikasi berbasis web untuk mengelola inventori gudang dengan fitur pencatatan barang masuk dan keluar serta laporan stok real-time.',
       tech: ['PHP', 'Laravel', 'MySQL', 'Bootstrap', 'JavaScript'],
       icon: 'fas fa-warehouse',
+      liveDemoLink: '#', // Update this link when available
+      githubLink: '#', // Update this link when available
     },
     {
-      title: 'Sistem Pencatatan Keuangan Toko',
-      description: 'Sistem Point of Sale lengkap dengan manajemen produk, transaksi penjualan real-time, laporan keuangan otomatis, analisis penjualan, dan sistem kasir yang user-friendly untuk toko retail.',
-      tech: ['React.js', 'Node.js', 'Express', 'MongoDB', 'Chart.js'],
-      icon: 'fas fa-cash-register',
+      title: 'Sistem Pencatatan Bank Sampah Digital',
+      description: 'Aplikasi pencatatan transaksi sampah di bank sampah, memungkinkan pengguna menabung dan menarik sampah, serta melihat laporan transaksi.',
+      tech: ['React.js', 'Node.js', 'MongoDB', 'Express', 'JavaScript'],
+      icon: 'fas fa-recycle',
+      liveDemoLink: 'https://pencatatan-bank-sampah.netlify.app', // Live Demo Link
+      githubLink: 'https://github.com/your-repository/pencatatan-bank-sampah', // GitHub Link
     },
     {
-      title: 'Website Profil Perusahaan',
-      description: 'Website company profile yang responsif dan modern dengan fitur galeri interaktif, informasi layanan detail, testimonial pelanggan, form kontak terintegrasi, dan SEO optimized untuk meningkatkan online presence.',
-      tech: ['Next.js', 'Tailwind CSS', 'Framer Motion', 'Vercel', 'CMS'],
-      icon: 'fas fa-building',
+      title: 'FoodLook - Catering Makanan Lezat',
+      description: 'FoodLook adalah platform catering online yang menyediakan berbagai menu makanan lezat untuk acara Anda. Dengan pilihan yang beragam, Anda dapat memilih menu yang sesuai dengan kebutuhan acara dan menjadikannya lebih spesial.',
+      tech: ['React.js', 'CSS', 'JavaScript'],
+      icon: 'fas fa-utensils',
+      liveDemoLink: 'https://foodlook-a0xj3okbz6twzxz7.builder-preview.com/',
+      githubLink: '#', // If you have a GitHub repo for this project
     },
     {
-      title: 'Content Creator & Video Editing',
-      description: 'Portfolio editing video profesional untuk berbagai proyek termasuk video promosi, tutorial, konten media sosial, corporate video, dan motion graphics dengan kualitas broadcast menggunakan Adobe Premiere Pro dan CapCut.',
-      tech: ['Adobe Premiere Pro', 'Capcut', 'After Effects', 'Motion Graphics', 'Color Grading'],
-      icon: 'fas fa-video',
-    },
-    {
-      title: 'Fotografi Produk',
-      description: 'Layanan fotografi produk komersial dengan fokus pada pencahayaan profesional, komposisi yang menarik, product photography untuk e-commerce, katalog produk, dan keperluan marketing dengan hasil berkualitas tinggi.',
-      tech: ['Product Photography', 'Lightroom', 'Photoshop', 'Studio Lighting', 'E-commerce'],
-      icon: 'fas fa-camera',
-    },
-    {
-      title: 'Materi Edukasi AI untuk Pendidik',
-      description: 'Materi edukasi komprehensif tentang dampak positif dan negatif AI yang dibuat untuk workshop guru SMK Sanjaya, mencakup presentasi interaktif, hands-on demonstration, dan panduan implementasi AI dalam dunia pendidikan modern.',
-      tech: ['Educational Design', 'AI Ethics', 'Workshop Development', 'Teaching Materials', 'Presentation'],
-      icon: 'fas fa-brain',
+      title: 'NutriScore - Mendeteksi Gizi Makanan',
+      description: 'NutriScore adalah aplikasi berbasis AI yang memungkinkan pengguna untuk menganalisis nilai gizi makanan secara cepat dengan cara mengunggah foto makanan. Aplikasi ini memberikan informasi lengkap mengenai kalori, protein, karbohidrat, lemak, dan vitamin dalam makanan Anda.',
+      tech: ['React.js', 'AI Integration', 'CSS', 'JavaScript'],
+      icon: 'fas fa-apple-alt',
+      liveDemoLink: 'http://nutriscoree.netlify.app',
+      githubLink: '#', // If you have a GitHub repo for this project
     },
   ];
 
-  const handleProjectClick = (projectTitle: string, linkType: string) => {
-    // Show notification
+  const handleProjectClick = (projectTitle: string, linkType: string, liveDemoLink: string) => {
     const notification = document.createElement('div');
     notification.style.cssText = `
       position: fixed;
@@ -125,17 +144,17 @@ export default function Projects() {
               <div className="project-links">
                 <button
                   className="project-link github-link"
-                  onClick={() => handleProjectClick(project.title, project.icon.includes('video') || project.icon.includes('camera') ? 'portfolio' : 'source code')}
+                  onClick={() => window.open(project.githubLink, '_blank')}
                 >
-                  <i className={project.icon.includes('video') ? 'fas fa-play-circle' : project.icon.includes('camera') ? 'fas fa-images' : 'fab fa-github'}></i>
-                  {project.icon.includes('video') ? 'Portfolio' : project.icon.includes('camera') ? 'Gallery' : 'GitHub'}
+                  <i className="fab fa-github"></i>
+                  GitHub
                 </button>
                 <button
                   className="project-link demo-link"
-                  onClick={() => handleProjectClick(project.title, project.icon.includes('video') ? 'YouTube' : project.icon.includes('camera') ? 'Instagram' : 'demo')}
+                  onClick={() => window.open(project.liveDemoLink, '_blank')}
                 >
-                  <i className={project.icon.includes('video') ? 'fab fa-youtube' : project.icon.includes('camera') ? 'fab fa-instagram' : 'fas fa-external-link-alt'}></i>
-                  {project.icon.includes('video') ? 'YouTube' : project.icon.includes('camera') ? 'Instagram' : 'Live Demo'}
+                  <i className="fas fa-external-link-alt"></i>
+                  View Live Demo
                 </button>
               </div>
             </div>
@@ -160,7 +179,8 @@ export default function Projects() {
           transition: all 0.3s ease;
           position: relative;
           overflow: hidden;
-          cursor: none;
+          cursor: pointer;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .project-card::before {
@@ -171,11 +191,6 @@ export default function Projects() {
           right: 0;
           height: 4px;
           background: var(--gradient-primary);
-        }
-
-        .project-card:hover {
-          transform: translateY(-15px);
-          box-shadow: var(--shadow-glow);
         }
 
         .project-icon {
@@ -219,7 +234,6 @@ export default function Projects() {
           font-size: 0.85rem;
           border: 1px solid rgba(255, 107, 107, 0.3);
           font-weight: 500;
-          cursor: none;
         }
 
         .project-links {
@@ -237,8 +251,6 @@ export default function Projects() {
           align-items: center;
           gap: 0.5rem;
           font-weight: 500;
-          cursor: none;
-          border: none;
         }
 
         .github-link {
@@ -249,7 +261,6 @@ export default function Projects() {
 
         .github-link:hover {
           background: rgba(255, 255, 255, 0.2);
-          transform: translateY(-2px);
         }
 
         .demo-link {
@@ -260,7 +271,6 @@ export default function Projects() {
 
         .demo-link:hover {
           background: rgba(76, 205, 196, 0.2);
-          transform: translateY(-2px);
         }
 
         @media (max-width: 768px) {
